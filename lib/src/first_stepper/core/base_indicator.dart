@@ -24,6 +24,7 @@ class BaseIndicator extends StatelessWidget {
 
   /// Radius of this indicator.
   final double radius;
+  final double activeRadius;
 
   /// The amount of padding around each side of the child.
   final double padding;
@@ -31,21 +32,14 @@ class BaseIndicator extends StatelessWidget {
   /// The amount of margin around each side of the indicator.
   final double margin;
 
-  /// Color of this indicator when it is completed.
-  final Color? completedColor;
-
-  final bool? isStepCompleted;
-
-  const BaseIndicator({
-    super.key,
-    this.isStepCompleted,
-    this.completedColor,
+  BaseIndicator({
     this.isSelected = false,
     this.child,
     this.onPressed,
     this.color,
     this.activeColor,
     this.activeBorderColor,
+    this.activeRadius = 24.0,
     this.radius = 24.0,
     this.padding = 5.0,
     this.margin = 1.0,
@@ -55,28 +49,25 @@ class BaseIndicator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(margin),
+      padding: isSelected ? EdgeInsets.all(margin) : EdgeInsets.zero,
       decoration: BoxDecoration(
-        border: Border.all(
-          color: isSelected
-              ? (activeBorderColor ?? Colors.blue)
-              : Colors.transparent,
-          width: activeBorderWidth,
-        ),
+        border: isSelected
+            ? Border.all(
+                color: activeBorderColor ?? Colors.blue,
+                width: activeBorderWidth,
+              )
+            : null,
         shape: BoxShape.circle,
       ),
       child: InkWell(
         onTap: onPressed as void Function()?,
         child: Container(
-          height: radius * 2,
-          width: radius * 2,
+          height: isSelected ? activeRadius * 2 : radius * 2,
+          width: isSelected ? activeRadius * 2 : radius * 2,
           padding: EdgeInsets.all(padding),
           decoration: BoxDecoration(
-            color: isSelected
-                ? activeColor ?? Colors.green
-                : (isStepCompleted == true)
-                    ? completedColor ?? Colors.green
-                    : color ?? Colors.grey,
+            color:
+                isSelected ? activeColor ?? Colors.green : color ?? Colors.grey,
             shape: BoxShape.circle,
           ),
           child: Center(
